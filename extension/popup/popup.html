@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phụ đề song ngữ</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header>
+      <span class="mark" aria-hidden="true">EN<span>·</span>VI</span>
+      <div><h1>Phụ đề song ngữ</h1><p>Đối chiếu ngay trong video</p></div>
+    </header>
+    <button id="toggle" type="button" aria-pressed="false">Bật phụ đề song ngữ</button>
+    <p id="status" role="status" aria-live="polite">Chọn track tiếng Anh trong YouTube. Caption gốc sẽ được ẩn khi bật.</p>
+    <div class="settings" aria-label="Tùy chỉnh hiển thị">
+      <label for="position">Vị trí</label>
+      <select id="position"><option value="bottom">Gần cạnh dưới</option><option value="top">Gần cạnh trên</option></select>
+      <label for="size">Kích thước</label>
+      <select id="size"><option value="0.8">Nhỏ</option><option value="1" selected>Vừa</option><option value="1.2">Lớn</option><option value="1.4">Rất lớn</option></select>
+      <label for="contrast">Tương phản</label>
+      <select id="contrast"><option value="adaptive">Thích ứng</option><option value="high">Cao</option></select>
+    </div>
+    <footer>Dịch cục bộ bằng Chrome · Không gửi phụ đề ra ngoài</footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

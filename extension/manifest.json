@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Bilingual Subtitles",
+  "version": "0.1.0",
+  "description": "Đối chiếu phụ đề tiếng Anh và tiếng Việt ngay trên video YouTube.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.youtube.com/watch*"],
+  "action": {
+    "default_title": "Phụ đề song ngữ",
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["https://www.youtube.com/watch*"],
+    "js": ["src/cue-controller.js", "src/content.js"],
+    "run_at": "document_idle"
+  }]
+}
