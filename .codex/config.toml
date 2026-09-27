@@ -1,0 +1,9 @@
+[agents]
+max_threads = 6
+max_depth = 2
+
+
+[agents.pr_review]
+description = "Review completed feature work for evidence-bound PR readiness."
+config_file = "agents/review-pr.toml"
+nickname_candidates = ["PRReview", "PRReviewer"]

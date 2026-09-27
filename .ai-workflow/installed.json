@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 2,
+  "packageVersion": "10.0.0",
+  "core": {
+    "id": "repository-driven-protocol",
+    "runtimes": [
+      "codex"
+    ],
+    "skills": [
+      "brainstorm-partner",
+      "fix-bug",
+      "learning-case",
+      "learning-evidence",
+      "learning-review",
+      "learning-workflow",
+      "manage-project-knowledge",
+      "prompt-leverage",
+      "property-based-testing",
+      "proposal-designer",
+      "quality-code-check",
+      "record-workflow-friction",
+      "review-pr",
+      "runtime-e2e-test-plan",
+      "smart-commits"
+    ]
+  },
+  "addons": [],
+  "kits": [
+    "coding-standard"
+  ],
+  "runtimes": [
+    "codex"
+  ],
+  "skills": [
+    "brainstorm-partner",
+    "fix-bug",
+    "learning-case",
+    "learning-evidence",
+    "learning-review",
+    "learning-workflow",
+    "manage-project-knowledge",
+    "prompt-leverage",
+    "property-based-testing",
+    "proposal-designer",
+    "quality-code-check",
+    "record-workflow-friction",
+    "review-pr",
+    "runtime-e2e-test-plan",
+    "smart-commits"
+  ],
+  "files": [
+    {
+      "scope": "repository",
+      "path": ".agents/roles/review-pr.md",
+      "hash": "sha256:7a2dd237414752c84a64634b50038d9c9031d0d6a588af14bda16d31cefb243f"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/brainstorm-partner/SKILL.md",
+      "hash": "sha256:7256898cef99ffdadd0bc9dec602f9a41c3d6c719f07bb8671ed2c55bd6a17f7"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/fix-bug/SKILL.md",
+      "hash": "sha256:ec0676153e134a8d9935706e4f5744ddbf51e5cdb0bff3916421cb5196e180b9"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-case/SKILL.md",
+      "hash": "sha256:3893260825af52c3fc56271bb11eeb9e86341d325f707266855a4be463df703a"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-evidence/SKILL.md",
+      "hash": "sha256:267fe4d677f9f69ca32985c441ce28261e183fe38b65d32a2939093a6780772b"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-review/SKILL.md",
+      "hash": "sha256:651798f9061e4d319a840b3bbbab454452f11688e5d3436ea7ea6988eaa31132"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/references/learning-context.md",
+      "hash": "sha256:c678429fcf13fb3479c6f1f9ac1923d7dc5fadf01b3768757d29a4ab1136c609"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/references/state-transitions.md",
+      "hash": "sha256:74f969a6916cc73f3cc64e7769aed1dd3c9e8fd375851f0226c28b5a0287f580"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/scripts/init_learning_session.py",
+      "hash": "sha256:148d5f591fb25db6f212b77bb49abecfd0c94da77670c4280a704bc3850e2dcf"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/scripts/state_io.py",
+      "hash": "sha256:8fb9bd7ee5824f24cecd97fe2fa14a55eb3a8c3614da9ff2af19f8886713b7a5"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/scripts/update_learning_context.py",
+      "hash": "sha256:70cc42debc24879abf350bf8d5da88f4bca591ec9a7d4c798348a184795b20a1"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/scripts/update_learning_state.py",
+      "hash": "sha256:9a7f2f5ca8fa59305c592afcb3486844f6a043c297abf3c2b67a6135ac416e71"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/scripts/validate_learning_state.py",
+      "hash": "sha256:9a8442c87dc58cbb7f405cc64750a5004e55b40f3d4466c7b9a9969e9a2cc785"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/learning-workflow/SKILL.md",
+      "hash": "sha256:cc57d471818d22dd5e152a005953d2c4b32141c904924f692d78fd0734af844e"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/manage-project-knowledge/SKILL.md",
+      "hash": "sha256:ea04e000dc32e09489b7109485fd7dcb104453dd7471f6468a8ed3d8aa9db323"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/prompt-leverage/SKILL.md",
+      "hash": "sha256:f3949f3e438962b6f553f6cab48bc83cd5c955200bc4b91004e07fe4b28b0653"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/agents/openai.yaml",
+      "hash": "sha256:51d635deefa254d8cdf6dc56450851b6ec9545cd37f88a4eb4035cf3f2262fff"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/assets/trail-of-bits-mark.svg",
+      "hash": "sha256:4bf74c789b38dcf6ad762c136b6832363d27ae19fbaa9a18ec18d66ecce6ca05"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/LICENSE",
+      "hash": "sha256:7abe19ec9bb73b36141b999b861d24ad855e808bafe0f81e84cce28556f6c297"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/README.md",
+      "hash": "sha256:81c4057472d9dc487340d27dbd47f325daa21edff2eac1a39b7cbd58d81d472b"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/references/generating.md",
+      "hash": "sha256:c0e72dfc89babe3c32de718b81b94044362c85e776d7475e950dfeaab78bb58e"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/references/interpreting-failures.md",
+      "hash": "sha256:dbae7db8773712ba03268a3d56ea5aa6720af0650a5189580bfd88aa2edc3f9a"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/references/libraries.md",
+      "hash": "sha256:f7218acf8e668130ef3048983472579d04e12030c5401926f666363e5f69c686"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/references/refactoring.md",
+      "hash": "sha256:6eb5c206f575704791f089608bb06e41d6eed91b9d3c7fb27912f969aed07a18"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/references/reviewing.md",
+      "hash": "sha256:110b08118a1e7b1a2566def6e9d2a0bf43fc2deefce857d2ce3b4382b07bc774"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/SKILL.md",
+      "hash": "sha256:9448cacb65c6237a7c22dc59602667177ecae405524079ae9ff92240590b995a"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/property-based-testing/UPSTREAM.md",
+      "hash": "sha256:121662f1884af491af31ecfec8896ed73ad1b66c54f4fe68aadc879aed0e5a37"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/proposal-designer/SKILL.md",
+      "hash": "sha256:45dbc160d7cb8a8a01765703f147f1c4fccb5fb62b93350d24fc03d57cbb554c"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/quality-code-check/SKILL.md",
+      "hash": "sha256:a48952ad8618936616218e0592571fc2c41f936c84f56595953671f0f6c54671"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/record-workflow-friction/agents/openai.yaml",
+      "hash": "sha256:5a6570686e3d94fb74cbc1763446d341aa23401ee86ec40712978cc9fa4d9ecb"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/record-workflow-friction/SKILL.md",
+      "hash": "sha256:5e9027a672a022ed06673952d0111f802a9b1dfdcf2187624e5c7f3618d886b3"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/review-pr/agents/openai.yaml",
+      "hash": "sha256:686bbe8489bd710e9641172f8239712b639b7df29d4e4dc0966f21729d10f895"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/review-pr/SKILL.md",
+      "hash": "sha256:228e043c8bc83ace76eac9f40e8a44623c1337904d2c334c2a97f6f4b840bc6e"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/runtime-e2e-test-plan/references/project-runtime.md",
+      "hash": "sha256:59eb34fa6c53062d718fb563398f3d8d27e8821c6e112506f626d1aa638cbd0c"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/runtime-e2e-test-plan/SKILL.md",
+      "hash": "sha256:17c00a963aebe93407bd8e27aecf649227300a580e50fe2b41755f422fc34e2f"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/runtime-e2e-test-plan/validate_test_plan.py",
+      "hash": "sha256:8a6541d26b8a24ba6d22b00d9c214179dd223cc32dfa9fe6150071f5513863cf"
+    },
+    {
+      "scope": "repository",
+      "path": ".agents/skills/smart-commits/SKILL.md",
+      "hash": "sha256:e39cebb44b02079e587ea9dc1509115e180669d4c7e5587d2442741879c6c862"
+    },
+    {
+      "scope": "repository",
+      "path": ".codex/agents/review-pr.toml",
+      "hash": "sha256:421118ea4466383af5c88a12b4c45d0abdf5f30b005aa6a061edd1e2827000f8"
+    },
+    {
+      "scope": "repository",
+      "path": ".codex/config.toml",
+      "hash": "sha256:7c1f1c51eb0d56b350a55fd41093a23f4f7691407c53e011559ae89b595e3973"
+    },
+    {
+      "scope": "repository",
+      "path": "AGENTS.md",
+      "hash": "sha256:7f7c8e0c8dcb749d87a03448e4d4eb09c357c901f9c147e4efd647efc46a2cc5"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/decisions/README.md",
+      "hash": "sha256:9c4abde1f398b97b9b5dd87efc0bde12f9948c11e86fa463420d1950756aad7c"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/patterns/README.md",
+      "hash": "sha256:c52b347d01ee2289fdb6bdd4d491ccdbf5dbf36cfbf0ba0377606644c1156c9f"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/plans/active/README.md",
+      "hash": "sha256:a13b93e3ba88081b3cb2348fe9306654e86d0a4ef8266d8c04b72a477b480ecb"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/plans/completed/README.md",
+      "hash": "sha256:e768002051a0d34c4c6d7da4398ebca9d5063e29ff2d30a60936c71823f826ec"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/product/README.md",
+      "hash": "sha256:c20998d815e749071421ca52edd47976aec02377a6a3936a9fb587360a6d84fe"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/proposals/README.md",
+      "hash": "sha256:3731ca557b3c5e6791071425cf70d6eef7fff00d48ecce28389d2ee7f4fa02e4"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/README.md",
+      "hash": "sha256:9d2a317e6c29d300b02268121457bb14736c9e4336f5163f698eb3bfbc6b23dd"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/runbooks/README.md",
+      "hash": "sha256:ed9ec29ad46285e5c1a701f9738ae036157cd6fe6cd6a579d46bb29ff5c80edf"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/testing/active/README.md",
+      "hash": "sha256:d60f7e65c29c0b11e8b7e86a34ff11aa65b535e327989506417e75c729de7e5a"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/testing/completed/README.md",
+      "hash": "sha256:7009b3ee2b9465635ecfc24a13d374d84d1d491c55fd5e315f8a7023072f050b"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/testing/README.md",
+      "hash": "sha256:a550ed3e237c680918fa696c657d0aaa2a93c3fc8031ab4b3cfc5b5c39f45d8c"
+    },
+    {
+      "scope": "repository",
+      "path": "docs/WORKFLOW.md",
+      "hash": "sha256:266446713e3547a35d0281971f0189c50577b0cd0b99a5fcb833b8065a58536f"
+    }
+  ]
+}
