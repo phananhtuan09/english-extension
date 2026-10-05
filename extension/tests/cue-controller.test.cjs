@@ -62,3 +62,26 @@ test('clearing caption invalidates in-flight translation and removes old result'
   assert.equal(cue.snapshot().translation, '');
   assert.equal(cue.snapshot().status, 'idle');
 });
+
+test('continuous growth is translated on a throttle instead of waiting for a pause', async () => {
+  const settled = [];
+  const cue = createCueController(() => {}, 30, text => settled.push(text));
+  for (const text of ['so', 'so today', 'so today we', 'so today we will', 'so today we will learn']) {
+    cue.update(text);
+    await tick(10);
+  }
+  await tick(30);
+  assert.ok(settled.length >= 1 && settled.length < 5);
+  assert.equal(settled[0], 'so today we');
+});
+
+test('keeps the previous translation visible while the same cue grows', async () => {
+  const cue = createCueController(() => {}, 1000);
+  cue.update('so today');
+  await cue.translate(async () => 'vậy hôm nay');
+  cue.update('so today we will');
+  assert.equal(cue.snapshot().translation, 'vậy hôm nay');
+  assert.equal(cue.snapshot().status, 'translated');
+  cue.update('A different cue');
+  assert.equal(cue.snapshot().translation, '');
+});

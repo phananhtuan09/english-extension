@@ -12,6 +12,10 @@
   let translatorPromise;
   let trackPoll;
   let captionObserver;
+  let timelineTick;
+  let timelineStatus = '';
+  let lastTimelineKey = '';
+  let loadedBody = '';
 
   const statusText = {
     idle: '', waiting: '', translating: 'Đang dịch…',
@@ -112,13 +116,72 @@
     const status = shadow.querySelector('.status');
     status.textContent = statusText[state.status] || '';
     status.hidden = !status.textContent;
+    shadow.querySelector('.wrap').hidden = !state.text && !status.textContent;
     shadow.querySelector('.gesture').hidden = state.status !== 'gestureRequired';
     applySettings();
   }
 
-  const cue = BilingualCue.createCueController(render, 900, (_text, revision) => translateCurrent({revision}));
+  const cue = BilingualCue.createCueController(render, 250, (_text, revision) => translateCurrent({revision}));
+
+  const timeline = BilingualTimeline.createCueTimeline();
+  const TRACK_CHANNEL = 'yt-bilingual';
+
+  const currentVideoId = () => new URLSearchParams(location.search).get('v') || '';
+
+  // Cues delivered by page-hook.js replace the DOM path for as long as they cover the current video.
+  function onTrack(message) {
+    if (message.tlang || !/^en(-|$)/i.test(message.lang)) return;
+    if (!message.videoId || message.videoId !== currentVideoId()) return;
+    if (timeline.videoId() === message.videoId && message.body === loadedBody) return;
+    const cues = BilingualTimedText.parseTimedText(message.body, {kind: message.kind});
+    if (!cues.length) return;
+    loadedBody = message.body;
+    timeline.load(message.videoId, cues);
+    timelineStatus = '';
+    if (settings.enabled) {
+      cue.clear();
+      startTimelineTick();
+      translateCurrent();
+    }
+  }
+
+  window.addEventListener('message', event => {
+    const data = event.data;
+    if (event.source !== window || data?.channel !== TRACK_CHANNEL || data.type !== 'timedtext') return;
+    if (typeof data.body === 'string') onTrack(data);
+  });
+  const requestTracks = () => window.postMessage({channel: TRACK_CHANNEL, type: 'request'}, location.origin);
+
+  function startTimelineTick() {
+    clearInterval(timelineTick);
+    lastTimelineKey = '';
+    timelineTick = setInterval(renderTimeline, 100);
+    renderTimeline();
+  }
+
+  function stopTimelineTick() {
+    clearInterval(timelineTick);
+    timelineTick = undefined;
+  }
+
+  function renderTimeline() {
+    if (!settings.enabled || !timeline.hasCues()) return;
+    const video = findPlayer()?.querySelector('video');
+    if (!video) return;
+    const item = timeline.at(video.currentTime * 1000);
+    const status = !item ? 'idle'
+      : item.translation ? 'translated'
+        : item.failed ? 'unavailable'
+          : timelineStatus || (timeline.isTranslating() ? 'translating' : 'waiting');
+    const state = {text: item?.text || '', translation: item?.translation || '', status};
+    const key = `${state.text}\n${state.translation}\n${state.status}`;
+    if (key === lastTimelineKey) return;
+    lastTimelineKey = key;
+    render(state);
+  }
 
   function readCaption() {
+    if (timeline.hasCues()) return;
     const text = [...document.querySelectorAll('.ytp-caption-segment')]
       .map(node => node.textContent.trim()).filter(Boolean).join(' ');
     if (text) cue.update(text);
@@ -128,8 +191,25 @@
     }
   }
 
+  async function translateTimeline(fromGesture) {
+    if (typeof Translator === 'undefined') {
+      timelineStatus = 'unsupported';
+      return;
+    }
+    try {
+      await ensureTranslator(fromGesture);
+      timelineStatus = '';
+      await timeline.translateAll(text => translator.translate(text));
+    } catch (error) {
+      timelineStatus = error?.name === 'NotAllowedError' ? 'gestureRequired'
+        : error?.name === 'NotSupportedError' ? 'unsupported' : 'unavailable';
+    }
+  }
+
   async function translateCurrent({fromGesture = false, revision = cue.snapshot().revision} = {}) {
-    if (!settings.enabled || !cue.snapshot().text) return;
+    if (!settings.enabled) return;
+    if (timeline.hasCues()) return translateTimeline(fromGesture);
+    if (!cue.snapshot().text) return;
     if (typeof Translator === 'undefined') {
       cue.setStatus('unsupported');
       return;
@@ -165,7 +245,8 @@
 
   function attachDownloadMonitor(monitor) {
     monitor.addEventListener('downloadprogress', event => {
-      cue.setStatus(event.loaded < 1 ? 'translating' : 'waiting');
+      if (timeline.hasCues()) timelineStatus = event.loaded < 1 ? 'translating' : '';
+      else cue.setStatus(event.loaded < 1 ? 'translating' : 'waiting');
     });
   }
 
@@ -174,17 +255,26 @@
     if (!captionObserver) {
       captionObserver = new MutationObserver(readCaption);
       captionObserver.observe(player, {subtree: true, childList: true, characterData: true});
-      document.addEventListener('yt-navigate-finish', onNavigate);
     }
     clearInterval(trackPoll);
     trackPoll = setInterval(() => {
       const caption = document.querySelector('.ytp-caption-segment');
       if (!caption) readCaption();
     }, 1000);
-    readCaption();
+    if (timeline.hasCues()) {
+      startTimelineTick();
+      translateCurrent();
+    } else readCaption();
   }
 
   function onNavigate() {
+    timeline.clear();
+    loadedBody = '';
+    if (!settings.enabled) {
+      requestTracks();
+      return;
+    }
+    stopTimelineTick();
     cue.clear();
     captionObserver?.disconnect();
     captionObserver = null;
@@ -193,6 +283,7 @@
     player = null;
     overlay?.remove();
     overlay = null;
+    requestTracks();
     if (settings.enabled) startWatching();
   }
 
@@ -201,7 +292,7 @@
       settings.enabled = Boolean(message.enabled);
       applySettings();
       if (settings.enabled) startWatching();
-      else { cue.clear(); clearInterval(trackPoll); }
+      else { timeline.abort(); stopTimelineTick(); cue.clear(); clearInterval(trackPoll); }
       sendResponse({ok: true});
       return;
     }
@@ -213,6 +304,9 @@
       sendResponse({ok: true, enabled: settings.enabled, caption: cue.snapshot()});
     }
   });
+
+  document.addEventListener('yt-navigate-finish', onNavigate);
+  requestTracks();
 
   chrome.storage.sync.get(DEFAULTS, stored => {
     settings = {...DEFAULTS, ...stored};

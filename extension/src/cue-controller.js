@@ -4,7 +4,7 @@
       return String(text || '').replace(/\s+/g, ' ').trim();
     },
 
-    createCueController(onChange, settleMs = 900, onSettled = () => {}, sentenceSettleMs = 160) {
+    createCueController(onChange, settleMs = 250, onSettled = () => {}, sentenceSettleMs = 160) {
       let currentText = '';
       let translatedText = '';
       let status = 'idle';
@@ -17,22 +17,29 @@
         update(text) {
           const next = api.cleanCaption(text);
           if (next === currentText) return;
+          // ASR captions grow word by word inside one cue; keep the translation of the
+          // shorter text on screen until the refreshed one arrives. Anything else is a new cue.
+          const isGrowth = Boolean(currentText && translatedText && next.startsWith(currentText));
           currentText = next;
           revision += 1;
-          clearTimeout(timer);
-          translatedText = '';
-          status = next ? 'waiting' : 'idle';
-          const expectedRevision = revision;
+          if (!isGrowth) translatedText = '';
+          status = !next ? 'idle' : translatedText ? 'translated' : 'waiting';
           publish();
-          if (next) {
-            const isSentenceEnd = /[.!?…][”"'’\])}]*$/u.test(next);
-            timer = setTimeout(() => {
-              if (revision !== expectedRevision) return;
-              status = 'translating';
-              publish();
-              onSettled(currentText, expectedRevision);
-            }, isSentenceEnd ? Math.min(settleMs, sentenceSettleMs) : settleMs);
+          if (!next) {
+            clearTimeout(timer);
+            timer = undefined;
+            return;
           }
+          const isSentenceEnd = /[.!?…][”"'’\])}]*$/u.test(next);
+          // Throttle, not debounce: continuous speech must not keep postponing translation.
+          if (timer && !isSentenceEnd) return;
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            timer = undefined;
+            if (!translatedText) status = 'translating';
+            publish();
+            onSettled(currentText, revision);
+          }, isSentenceEnd ? Math.min(settleMs, sentenceSettleMs) : settleMs);
         },
 
         async translate(translateText) {
@@ -40,7 +47,8 @@
           const expectedRevision = revision;
           const source = currentText;
           clearTimeout(timer);
-          status = 'translating';
+          timer = undefined;
+          if (!translatedText) status = 'translating';
           publish();
           try {
             const result = await translateText(source);
@@ -61,6 +69,7 @@
 
         clear() {
           clearTimeout(timer);
+          timer = undefined;
           currentText = '';
           translatedText = '';
           revision += 1;
