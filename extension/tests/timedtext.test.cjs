@@ -12,8 +12,8 @@ test('creator track keeps one cue per event and drops blank events', () => {
     {tStartMs: 5000},
   ]);
   assert.deepEqual(parseTimedText(body), [
-    {start: 0, end: 2000, text: 'Hello there'},
-    {start: 2500, end: 4000, text: 'General Kenobi.'},
+    {start: 0, end: 2000, text: 'Hello there', words: [{start: 0, text: 'Hello'}, {start: 1000, text: 'there'}]},
+    {start: 2500, end: 4000, text: 'General Kenobi.', words: [{start: 2500, text: 'General'}, {start: 3250, text: 'Kenobi.'}]},
   ]);
 });
 
@@ -34,8 +34,8 @@ test('ASR words split on pauses and keep cues sorted without overlap', () => {
   ]);
   const cues = parseTimedText(body, {kind: 'asr'});
   assert.deepEqual(cues, [
-    {start: 0, end: 3000, text: 'first part'},
-    {start: 3000, end: 9000, text: 'second part'},
+    {start: 0, end: 3000, text: 'first part', words: [{start: 0, text: 'first'}, {start: 400, text: 'part'}]},
+    {start: 3000, end: 9000, text: 'second part', words: [{start: 3000, text: 'second'}, {start: 3400, text: 'part'}]},
   ]);
 });
 

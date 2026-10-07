@@ -7,13 +7,26 @@
 
   const clean = text => String(text || '').replace(/\s+/g, ' ').trim();
 
+  // Creator tracks have no word timing, so spread the words over the cue in proportion to their length.
+  function estimateWords(text, start, end) {
+    const texts = text.split(' ');
+    const total = texts.reduce((sum, word) => sum + word.length + 1, 0);
+    let offset = 0;
+    return texts.map(word => {
+      const wordStart = Math.round(start + (end - start) * offset / total);
+      offset += word.length + 1;
+      return {start: wordStart, text: word};
+    });
+  }
+
   // Creator tracks: one cue per json3 event.
   function creatorCues(events) {
     return events.flatMap(event => {
       const text = clean((event.segs || []).map(seg => seg.utf8).join(''));
       if (!text) return [];
       const start = event.tStartMs || 0;
-      return [{start, end: start + (event.dDurationMs || FALLBACK_CUE_MS), text}];
+      const end = start + (event.dDurationMs || FALLBACK_CUE_MS);
+      return [{start, end, text, words: estimateWords(text, start, end)}];
     });
   }
 
@@ -55,12 +68,13 @@
         start: words[0].start,
         end: Math.min(Math.max(ownEnd, last.start + MIN_CUE_MS), nextStart),
         text: words.map(w => w.text).join(' '),
+        words: words.map(({start, text}) => ({start, text})),
       };
     });
   }
 
   const api = {
-    // Returns cues sorted by start, in milliseconds: [{start, end, text}]. Unknown formats give [].
+    // Returns cues sorted by start, in milliseconds: [{start, end, text, words: [{start, text}]}]. Unknown formats give [].
     parseTimedText(body, {kind = ''} = {}) {
       let data;
       try { data = JSON.parse(body); } catch { return []; }

@@ -56,7 +56,7 @@
           cursor = index < cues.length ? index : 0;
           const cue = cues[index];
           if (!cue || cue.start > ms) return null;
-          return {index, text: cue.text, translation: translations[index], failed: failed.has(index)};
+          return {index, text: cue.text, words: cue.words, translation: translations[index], failed: failed.has(index)};
         },
 
         isTranslating() { return running !== null; },

@@ -63,15 +63,18 @@
     style.textContent = `
       :host { position:absolute; z-index:2147483000; left:5%; right:5%; display:none; pointer-events:none;
         box-sizing:border-box; text-align:center; font-family:Arial, "Noto Sans", sans-serif;
-        --caption-size: clamp(18px, 2.3vw, 30px); --ink:#fff; --muted:#e9eef5; --shade:rgba(12,16,22,.52); }
+        --caption-size: clamp(15px, 1.8vw, 24px); --ink:#fff; --muted:#e9eef5; --shade:rgba(12,16,22,.52); }
       :host([data-position="bottom"]) { bottom:13%; }
       :host([data-position="top"]) { top:12%; }
       :host([data-contrast="high"]) { --shade:rgba(4,7,12,.82); --ink:#fff; --muted:#fff; }
-      .wrap { display:flex; flex-direction:column; gap:.32em; width:min(76%, 900px); max-width:90%; margin:0 auto;
+      .wrap { display:flex; flex-direction:column; gap:.24em; width:min(76%, 900px); max-width:90%; margin:0 auto;
         padding:.2em .48em; border-radius:5px; background:var(--shade); box-decoration-break:clone;
         -webkit-box-decoration-break:clone; text-shadow:0 1px 2px #000, 0 0 5px #000; }
-      .source { color:var(--ink); font-size:calc(var(--caption-size) * var(--scale, 1)); font-weight:650; line-height:1.22; text-align:left; }
-      .translation { color:var(--muted); font-size:calc(var(--caption-size) * var(--scale, 1) * .88); font-weight:500; line-height:1.25; text-align:left; }
+      .word { opacity:.6; transition:opacity .12s linear; }
+      .word.spoken { opacity:1; }
+      .source, .translation { font-size:calc(var(--caption-size) * var(--scale, 1) * .85); font-weight:500; line-height:1.25; text-align:left; }
+      .source { color:var(--ink); }
+      .translation { color:var(--muted); }
       .status { color:#d9e8fa; font-size:calc(var(--caption-size) * var(--scale, 1) * .58); font-weight:500; line-height:1.3; }
       .gesture { pointer-events:auto; margin:.25em auto 0; padding:.35em .7em; border:1px solid rgba(255,255,255,.48);
         border-radius:4px; background:rgba(20,35,48,.88); color:#fff; font:600 12px Arial,sans-serif; cursor:pointer; }
@@ -107,9 +110,29 @@
     overlay.style.display = settings.enabled ? 'block' : 'none';
   }
 
+  // Karaoke highlight: words not yet spoken are dimmed. Spans are rebuilt only when the cue changes.
+  function renderSource({text, words, spoken = 0}) {
+    const source = shadow.querySelector('.source');
+    if (!words) {
+      source.dataset.cue = '';
+      source.textContent = text;
+      return;
+    }
+    if (source.dataset.cue !== text) {
+      source.dataset.cue = text;
+      source.replaceChildren(...words.flatMap((word, index) => {
+        const span = document.createElement('span');
+        span.className = 'word';
+        span.textContent = word.text;
+        return index ? [' ', span] : [span];
+      }));
+    }
+    [...source.querySelectorAll('.word')].forEach((span, index) => span.classList.toggle('spoken', index < spoken));
+  }
+
   function render(state) {
     if (!ensureOverlay()) return;
-    shadow.querySelector('.source').textContent = state.text;
+    renderSource(state);
     const translation = shadow.querySelector('.translation');
     translation.textContent = state.translation;
     translation.hidden = !state.translation;
@@ -155,7 +178,7 @@
   function startTimelineTick() {
     clearInterval(timelineTick);
     lastTimelineKey = '';
-    timelineTick = setInterval(renderTimeline, 100);
+    timelineTick = setInterval(renderTimeline, 50);
     renderTimeline();
   }
 
@@ -173,8 +196,10 @@
       : item.translation ? 'translated'
         : item.failed ? 'unavailable'
           : timelineStatus || (timeline.isTranslating() ? 'translating' : 'waiting');
-    const state = {text: item?.text || '', translation: item?.translation || '', status};
-    const key = `${state.text}\n${state.translation}\n${state.status}`;
+    const ms = video.currentTime * 1000;
+    const spoken = item ? item.words.filter(word => word.start <= ms).length : 0;
+    const state = {text: item?.text || '', words: item?.words, spoken, translation: item?.translation || '', status};
+    const key = `${state.text}\n${state.translation}\n${state.status}\n${spoken}`;
     if (key === lastTimelineKey) return;
     lastTimelineKey = key;
     render(state);
